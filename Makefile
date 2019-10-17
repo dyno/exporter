@@ -9,6 +9,7 @@ export STREAMLIT_CREDENTIALS
 
 EXPORTER_BASE := $(shell pwd)
 
+# http://supervisord.org/running.html
 .PHONY: start-services
 start-services: streamlit-credentials
 	sudo /usr/bin/supervisord -c $(EXPORTER_BASE)/supervisord.ini
@@ -19,8 +20,17 @@ start-%:
 stop-%:
 	sudo /usr/bin/supervisorctl -c $(EXPORTER_BASE)/supervisord.ini stop $*
 
+restart-%:
+	sudo /usr/bin/supervisorctl -c $(EXPORTER_BASE)/supervisord.ini stop $*
+
 status-%:
 	sudo /usr/bin/supervisorctl -c $(EXPORTER_BASE)/supervisord.ini status $*
+
+update-all:
+	sudo /usr/bin/supervisorctl -c $(EXPORTER_BASE)/supervisord.ini update all
+
+terminate:
+	sudo /usr/bin/supervisorctl -c $(EXPORTER_BASE)/supervisord.ini signal SIGTERM all
 
 .PHONY: streamlit-credentials
 streamlit-credentials:
