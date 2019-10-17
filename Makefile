@@ -40,15 +40,27 @@ disable-supervisor-autostart:
 	sudo systemctl disable supervisor
 
 
+# ------------------------------------------------------------------------------
+#  system setup
+
 .PHONY: install-requirements
 install-requirements:
-	sudo apt install nginx nginx-extras supervisor
+	sudo apt install nginx nginx-extras supervisor firewalld
+
+.PHONY: setup-firewall
+setup-firewall:
+	sudo firewall-cmd --zone=public --permanent --add-port=80/tcp
+	sudo firewall-cmd --reload
+	sudo firewall-cmd --list-all
 
 oci-metadata:
 	# https://docs.cloud.oracle.com/iaas/Content/Compute/Tasks/gettingmetadata.htm
 	curl -L http://169.254.169.254/opc/v1/instance/
 
-network:
+public-ip:
+	curl -L http://checkip.amazonaws.com/
+
+check-network:
 	route -n
 	sudo netstat -tulnp
-	sudo ufw status
+	sudo firewall-cmd --list-all
