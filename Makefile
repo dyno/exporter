@@ -22,6 +22,7 @@ stop-%:
 
 restart-%:
 	sudo /usr/bin/supervisorctl -c $(EXPORTER_BASE)/supervisord.ini stop $*
+	sudo /usr/bin/supervisorctl -c $(EXPORTER_BASE)/supervisord.ini start $*
 
 status-%:
 	sudo /usr/bin/supervisorctl -c $(EXPORTER_BASE)/supervisord.ini status $*
@@ -60,6 +61,7 @@ install-requirements:
 .PHONY: setup-firewall
 setup-firewall:
 	sudo firewall-cmd --zone=public --permanent --add-port=80/tcp
+	sudo firewall-cmd --zone=public --permanent --add-port=443/tcp
 	sudo firewall-cmd --reload
 	sudo firewall-cmd --list-all
 
@@ -69,6 +71,17 @@ oci-metadata:
 
 public-ip:
 	curl -L http://checkip.amazonaws.com/
+
+certbot:
+	# https://certbot.eff.org/lets-encrypt/ubuntubionic-nginx
+	sudo apt-get install software-properties-common
+	sudo apt-get install python-certbot-nginx
+	sudo add-apt-repository ppa:certbot/certbot
+	sudo apt-get update
+	sudo apt-get install certbot python-certbot-nginx
+
+certonly:
+	sudo certbot --nginx certonly
 
 check-network:
 	route -n
