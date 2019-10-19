@@ -33,10 +33,17 @@ update-all:
 terminate:
 	sudo /usr/bin/supervisorctl -c $(EXPORTER_BASE)/supervisord.ini signal SIGTERM all
 
+nginx-reload:
+	sudo nginx -s reload
+
 .PHONY: streamlit-credentials
 streamlit-credentials:
 	mkdir -p $(HOME)/.streamlit
 	echo "$${STREAMLIT_CREDENTIALS}" >$(HOME)/.streamlit/credentials.toml
+
+
+# ------------------------------------------------------------------------------
+#  system setup
 
 .PHONY: disable-autostart disable-nginx-autostart disable-supervisor-autostart
 
@@ -50,9 +57,6 @@ disable-supervisor-autostart:
 	sudo service supervisor stop || true
 	sudo systemctl disable supervisor
 
-
-# ------------------------------------------------------------------------------
-#  system setup
 
 .PHONY: install-requirements
 install-requirements:
