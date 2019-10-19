@@ -87,6 +87,9 @@ certbot:
 certonly:
 	sudo certbot --nginx certonly
 
+certrenew:
+	sudo certbot renew
+
 check-network:
 	route -n
 	sudo netstat -tulnp
